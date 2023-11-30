@@ -106,10 +106,10 @@ func (kv *KeyValueStore) Set(key string, value []byte) {
         // Clear the Write-Ahead Log
         if err := kv.ClearWAL(); err != nil {
             log.Printf("Error clearing WAL: %v\n", err)
-            // Handle the error as needed (e.g., log it or retry)
         }
     }
 }
+
 
 // Delete removes the key and returns its value.
 func (kv *KeyValueStore) Delete(key string) ([]byte, bool) {
@@ -241,7 +241,6 @@ func (kv *KeyValueStore) WriteSSTable(filename string) error {
     return nil
 }
 
-
 // writeToWAL writes a log entry to the Write-Ahead Log file.
 func (kv *KeyValueStore) writeToWAL(entry map[string]interface{}) {
 	// Convert the entry to JSON
@@ -293,7 +292,6 @@ func (kv *KeyValueStore) RecoverFromWAL() error {
             value := logEntry["value"].(string)
 			fmt.Printf("Set operation recovered from WAL - Key: %s, Value: %s\n", key, string(value))
             // Set the key-value pair in memory
-			// kv.Set(key, []byte(value))
             kv.data[key] = []byte(value)
 
         case "delete":
@@ -301,7 +299,6 @@ func (kv *KeyValueStore) RecoverFromWAL() error {
 			value := logEntry["value"].(string)
             // Delete the key from memory
 			fmt.Printf("Delete operation recovered from WAL - Key: %s, Value: %s\n", key, string(value))
-            // kv.Delete(key)
 			delete(kv.data, key)
         }
     }
@@ -517,7 +514,6 @@ func main() {
     // Recover from WAL on system restart
     if err := kv.RecoverFromWAL(); err != nil {
         log.Printf("Error recovering from WAL: %v\n", err)
-        // Handle the error as needed (e.g., log it or terminate the application)
     }
 
     // Start the HTTP server
